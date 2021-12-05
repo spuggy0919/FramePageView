@@ -2,7 +2,7 @@
 //  VTxtRubyApp.swift
 //  VTxtRuby
 //
-//  Created by Lin Hess on 2021/12/5.
+//  Created by spuggy0919@gmail.com on 2021/12/5.
 //
 
 import SwiftUI

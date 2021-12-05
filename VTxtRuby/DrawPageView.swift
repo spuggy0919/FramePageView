@@ -2,7 +2,7 @@
 //  DrawPageView.swift
 //  CoreTextExample
 //
-//  Created by Lin Hess on 2021/10/17.
+//  Created by spuggy0919@gmail.com on 2021/10/17.
 //
 // ref:https://stackoverflow.com/questions/25994057/ruby-text-furigana-in-ios
 import Foundation
