@@ -12,12 +12,15 @@ struct ContentView: View {
     @State private var isUpdate = false
     @State private var pageCount:Int  = 0
     @State private var fontSize:CGFloat  = 30
+    @State var pageCur:Int = 1
 
     
     @StateObject var  gestureState:GestureState =  GestureState()
     
+    //Wheel Picker
+    @State var pickerShow:Bool = true
+    @State var selection:Int = 0
     
-    @State var pageCur:Int = 1
     @ObservedObject private var Settings = FramePageSettings()
 
     let sw = UIScreen.main.bounds.width
@@ -26,15 +29,33 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geometry in
         ZStack{
-            // Page Background View, maybe Image
 
-            Rectangle().fill(Color(Settings.pagebrcolor))
+            Form{
+
+                Picker("TXT Samples", selection: $selection) {
+                    ForEach(0..<txtSamples.count, id: \.self) { select in
+                        Text(txtSamples[select].description)
+                    }
+                }.pickerStyle(WheelPickerStyle())
+                .onTapGesture {
+                    pickerShow.toggle() // swip up to show picker
+                    // new selection
+                    Settings.inputString = txtSamples[selection].text
+                    settingPageView(false, .inputChange)
+                }
+            } // form
+            .background(Color.gray)
+            .zIndex( (pickerShow) ? 1 : -2)
+            .offset(y: sh/2 )
+            
+            // Page Background View, maybe Image
+            Color.init(Settings.pagebrcolor)
                 .frame(width:sw, height:sh)
                 .edgesIgnoringSafeArea(.all)
                 .zIndex(-1)
             
             // Page View 
-            FramePageView(inputStr: 李白將進酒, isUpdate: $isUpdate, pagecount: $pageCount, settings:Settings)
+            FramePageView(inputStr: txtSamples[selection].text, isUpdate: $isUpdate, pagecount: $pageCount, settings:Settings)
              .padding(20) // padding should before frame
              .frame(width:sw, height: geometry.frame(in: .local).size.height - Settings.topSafeArea - Settings.bottomSafeArea)
              .background(Color.clear)
@@ -54,13 +75,11 @@ struct ContentView: View {
         case .right:
             VPageNext()
         case .down:
-           // self.show = false
             break
         case .up:
-           // self.show = true
+            pickerShow.toggle()
             break
         case .edgeRight:  do {
-          //  hiddenCurView = true
             break
 
         }         // swip from left side
@@ -82,10 +101,7 @@ struct ContentView: View {
     func tappedAction() {
     //    return
         if (gestureState.gestureType() == .tapped) {
-
-            
-
-            switch gestureState.positionIndex() {
+           switch gestureState.positionIndex() {
             case 1: VPageNext()
             case 2: do {
                 fontSize += 5
@@ -126,7 +142,7 @@ struct ContentView: View {
 
     func pagePrev(){
 
-        if (pageCur  == 1) {return}
+        if (pageCur  < 1) {pageCur = 1; return}
         pageCur = pageCur - 1
         settingPageView(false,.pageChange)
 
@@ -134,8 +150,8 @@ struct ContentView: View {
     }
     func pageNext(){
 
-        if (pageCur  == pageCount) {return}
-
+        if (pageCur  >= pageCount) { pageCur = pageCount ; return}
+        
         pageCur = pageCur + 1
         settingPageView(false,.pageChange)
     }
@@ -160,10 +176,12 @@ struct ContentView: View {
 
         if (layout == .inputChange || layout == .reLayout) {
             Settings.layoutFlag = .attrStringInput
-            Settings.nsAttrString = bopomofo(text: 李白將進酒, settings: Settings)
+            Settings.nsAttrString = bopomofo(text: Settings.inputString, settings: Settings)
+            Settings.pageCur = 1
         }
         isUpdate = !editingflag // change FramePageView State to settingSet
-
+        // **NOTE**: page count is too late for foreground
+        // need to wait layout complete
 
     }
     func bopomofo(text: String, settings:FramePageSettings)->NSAttributedString{

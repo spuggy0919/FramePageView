@@ -8,14 +8,30 @@
 
 import Foundation
 import UIKit
-// ruby parser
-// ｜心《ㄒㄧㄣ》 // ｜(.+?)《(.+?)》
-//  詩ㄕ名ㄇㄧㄥˊ // "([\\p{Han}]+?)[\s]*([ㄅ-ㄩ˙ˊˇˋ]{1,4})"
-// 長(cháng) 信(xìn) 怨(yuàn) 王(wáng) 昌(chāng) 齡(líng) "([\\p{Han}]+?)[\\n\\t]*\\(([a-zA-Zāɑ̄ēīōūǖĀĒĪŌŪǕáɑ́éíóúǘÁÉÍÓÚǗǎɑ̌ěǐǒǔǚǍĚǏǑǓǙàɑ̀èìòùǜÀÈÌÒÙǛɑüÜ1-4]+?)\\)"
-// 長cháng 信xìn 怨yuàn 王wáng 昌chāng 齡líng "([\\p{Han}]+?)[\\n\\t]*\\(([a-zA-Zāɑ̄ēīōūǖĀĒĪŌŪǕáɑ́éíóúǘÁÉÍÓÚǗǎɑ̌ěǐǒǔǚǍĚǏǑǓǙàɑ̀èìòùǜÀÈÌÒÙǛɑüÜ1-4]+?)\\)"
 
-
-
+class TXTItem{
+    var description:String
+    var text:String
+    init(_ desc:String, _ txt:String){
+        description = desc
+        text = txt
+    }
+}
+var txtSamples :[TXTItem] = [
+    TXTItem("李白將進酒注音",李白將進酒),
+    TXTItem("蜀道難注音",蜀道難),
+    TXTItem("心經注音",心經注音),
+    TXTItem("詩拼音",Poempingyin),
+    TXTItem("蜀道難拼音",蜀道難pingyin),
+]
+//// ruby parser
+//// ｜心《ㄒㄧㄣ》 // ｜(.+?)《(.+?)》
+////  詩ㄕ名ㄇㄧㄥˊ // "([\\p{Han}]+?)[\s]*([ㄅ-ㄩ˙ˊˇˋ]{1,4})"
+//// 長(cháng) 信(xìn) 怨(yuàn) 王(wáng) 昌(chāng) 齡(líng) "([\\p{Han}]+?)[\\n\\t]*\\(([a-zA-Zāɑ̄ēīōūǖĀĒĪŌŪǕáɑ́éíóúǘÁÉÍÓÚǗǎɑ̌ěǐǒǔǚǍĚǏǑǓǙàɑ̀èìòùǜÀÈÌÒÙǛɑüÜ1-4]+?)\\)"
+//// 長cháng 信xìn 怨yuàn 王wáng 昌chāng 齡líng "([\\p{Han}]+?)[\\n\\t]*\\(([a-zA-Zāɑ̄ēīōūǖĀĒĪŌŪǕáɑ́éíóúǘÁÉÍÓÚǗǎɑ̌ěǐǒǔǚǍĚǏǑǓǙàɑ̀èìòùǜÀÈÌÒÙǛɑüÜ1-4]+?)\\)"
+//
+//
+//
 extension String {
     func matches(for regex: String, in text: String) -> [String] {
 
@@ -38,25 +54,15 @@ extension String {
     var str = instr
         let regex = try! NSRegularExpression(pattern: regex, options: .caseInsensitive)
         str = regex.stringByReplacingMatches(in: instr, options: [], range: NSRange(0..<instr.utf16.count), withTemplate: replace)
-        
+
         return str
     }
-    
+
     var containsChineseCharacters: Bool {
             return self.range(of: "\\p{Han}", options: .regularExpression) != nil
         }
-    //->These are *** bad words.
-    /// Finds matching groups and replace them with a template using an intuitive API.
-    ///
-    /// This example will go through an input string and replace all occurrences of "MyGreatBrand" with "**MyGreatBrand**".
-    ///
-    ///     let regex = try! NSRegularExpression(pattern: #"(MyGreatBrand)"#) // Matches all occurrences of MyGreatBrand
-    ///     someMarkdownDocument.replaceGroups(matching: regex, with: #"**$1**"#) // Surround all matches with **, formatting as bold text in markdown.
-    ///     print(someMarkdownDocument)
-    ///
-    /// - Parameters:
-    ///   - regex: the regex used to match groups.
-    ///   - template: the template used to replace the groups. Reference groups inside your template using dollar sign symbol followed by the group number, e.g. "$1", "$2", etc.
+
+    
     public mutating func replaceGroups(matching regex: NSRegularExpression, with template: String, options: NSRegularExpression.MatchingOptions = []) {
         var replacingRanges: [(subrange: Range<String.Index>, replacement: String)] = []
         let matches = regex.matches(in: self, options: options, range: NSRange(location: 0, length: utf16.count))
@@ -73,17 +79,7 @@ extension String {
         }
     }
 
-    /// Finds matching groups and replace them with a template using an intuitive API.
-    ///
-    /// This example will go through an input string and replace all occurrences of "MyGreatBrand" with "**MyGreatBrand**".
-    ///
-    ///     let regex = try! NSRegularExpression(pattern: #"(MyGreatBrand)"#) // Matches all occurrences of MyGreatBrand
-    ///     let result = someMarkdownDocument.replacingGroups(matching: regex, with: #"**$1**"#) // Surround all matches with **, the bold text modifier syntax in markdown.
-    ///     print(result)
-    ///
-    /// - Parameters:
-    ///   - regex: the regex used to match groups.
-    ///   - template: the template used to replace the groups. Reference groups inside your template using dollar sign symbol followed by the group number, e.g. "$1", "$2", etc.
+
     public func replacingGroups(matching regex: NSRegularExpression, with transformationString: String) -> String {
         var mutableSelf = self
         mutableSelf.replaceGroups(matching: regex, with: transformationString)
@@ -94,8 +90,6 @@ extension String {
 extension NSAttributedString.Key {
     static let rubyAnnotation: NSAttributedString.Key = kCTRubyAnnotationAttributeName as NSAttributedString.Key
 }
-
-
 
 extension NSMutableAttributedString {
     func addAttributes(_ attrs: [NSAttributedString.Key: Any] = [:]) {
@@ -108,6 +102,9 @@ extension NSRegularExpression {
         return matches(in: string, options: options, range: NSRange(string.startIndex ..< string.endIndex, in: string))
     }
 }
+
+
+
 
 let 心經筆記="""
 心經筆記  作者 Spuggy 修改于二○○九年五月十五日
@@ -947,7 +944,7 @@ let 蜀道難 = """
 來源：http://cls.lib.ntu.edu.tw/300/ALL/ALLFRAME.htm
 
 """
-let 心經注音1 = """
+let 心經注音 = """
 ｜心《ㄒㄧㄣ》｜經《ㄐㄧㄥ》｜注《ㄓㄨˋ》｜音《ㄧㄣ》｜版《ㄅㄢˇ》
 ｜般《ㄅㄛ》｜若《ㄖㄜˇ》｜波《ㄅㄛ》｜羅《ㄌㄨㄛˊ》｜蜜《ㄇㄧˋ》｜多《ㄉㄨㄛ》｜心《ㄒㄧㄣ》｜經《ㄐㄧㄥ》　｜唐《ㄊㄤˊ》｜三《ㄙㄢ》｜藏《ㄗㄤˋ》｜法《ㄈㄚˇ》｜師《ㄕ》｜玄《ㄒㄩㄢˊ》｜奘《ㄗㄤ　ˋ》｜奉《ㄈㄥˋ》｜詔《ㄓㄠ》｜譯《ㄧˋ》
 　｜觀《ㄍㄨㄢ》｜自《ㄗˋ》｜在《ㄗㄞˋ》｜菩《ㄆㄨˊ》｜薩《ㄙㄚˋ》　｜行《ㄒㄧㄥˊ》｜深《ㄕㄣ》｜般《ㄅㄛ》｜若《ㄖㄜˇ》｜波《ㄅㄛ》｜羅《ㄌㄨㄛˊ》｜蜜《ㄇㄧˋ》｜多《ㄉㄨㄛ》｜時《ㄕˊ》　｜照《ㄓㄠˋ》｜見《ㄐㄧㄢˋ》｜五《ㄨˇ》｜蘊《ㄩㄣˋ》｜皆《ㄐㄧㄝ》｜空《ㄎㄨㄥ》　｜度《ㄉㄨˋ》｜一《ㄧˊ》｜切《ㄑㄧㄝˋ》｜苦《ㄎㄨˇ》｜厄《ㄜˋ》

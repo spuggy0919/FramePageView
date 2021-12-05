@@ -25,5 +25,5 @@ Capture Screens
 
 
 
-<img src="./Image/3.png" alt="3" style="zoom:25%;" /><img src="./Image/2.png" alt="2" style="zoom:25%;" /><img src="./Image/3.png" alt="3" style="zoom:25%;" />
+<img src="./Image/1.png" alt="1" style="zoom:25%;" /><img src="./Image/2.png" alt="2" style="zoom:25%;" /><img src="./Image/3.png" alt="3" style="zoom:25%;" />
 
