@@ -26,6 +26,8 @@ struct ContentView: View {
     let sw = UIScreen.main.bounds.width
     let sh = UIScreen.main.bounds.height
 
+    let markdown = MarkdownElement(testMDString) // for testingg
+    
     var body: some View {
         GeometryReader { geometry in
         ZStack{
@@ -56,10 +58,10 @@ struct ContentView: View {
             
             // Page View 
             FramePageView(inputStr: txtSamples[selection].text, isUpdate: $isUpdate, pagecount: $pageCount, settings:Settings)
-             .padding(20) // padding should before frame
-             .frame(width:sw, height: geometry.frame(in: .local).size.height - Settings.topSafeArea - Settings.bottomSafeArea)
-             .background(Color.clear)
-                 .zIndex(0)
+             .padding(0) // padding should before frame
+                .frame(width:sw, height: geometry.frame(in: .global).size.height ) // not contain safeAreaInsets
+                .offset(y: -geometry.safeAreaInsets.bottom )  
+         //    .background(Color.clear) .zIndex(0)
              .onSwiped(gestureState, perform:swipedAction) //add drag will impact the scroll
              .onTapped(gestureState) //add drag will impact the scroll
             
@@ -171,12 +173,18 @@ struct ContentView: View {
         Settings.setFontSize(fontsize: fontSize)
         Settings.layoutFlag = layout
      //   Settings.rubyfgcolor = UIColor(Color.yellow)
-
+     //   Settings.debugDrawFrameFlag = true //draw framebox
         Settings.pageCur = pageCur
+        Settings.fontSize = fontSize
 
         if (layout == .inputChange || layout == .reLayout) {
             Settings.layoutFlag = .attrStringInput
-            Settings.nsAttrString = bopomofo(text: Settings.inputString, settings: Settings)
+            if (selection == 0 ) {
+                markdown.MDparser(text:Settings.inputString, Settings)
+                Settings.nsAttrString = markdown.atStr
+            }else{
+                Settings.nsAttrString =  bopomofolocal(text: Settings.inputString, settings: Settings)
+            }
             Settings.pageCur = 1
         }
         isUpdate = !editingflag // change FramePageView State to settingSet
@@ -184,7 +192,7 @@ struct ContentView: View {
         // need to wait layout complete
 
     }
-    func bopomofo(text: String, settings:FramePageSettings)->NSAttributedString{
+    func bopomofolocal(text: String, settings:FramePageSettings)->NSAttributedString{
         let bopomofoPaser = Bopomofo(text: text, settings: settings)
         return bopomofoPaser.bopomofo(text: text)
     }

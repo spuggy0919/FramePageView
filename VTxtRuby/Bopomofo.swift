@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 enum rubyParserType{
     case furikana // ｜(.+?)《(.+?)》
@@ -112,11 +113,12 @@ class Bopomofo {
         }
         return nil
     }
+    // ruby only true will add addParagraphStyle
     func bopomofo(text: String)->NSAttributedString{
         let rubysizefactor: CGFloat = 0.4 //0.333333333
         if (text == "" ) {return NSAttributedString(string:"")}
         let text = stripSpace(text)
-        let attributedString = NSMutableAttributedString(string: text)
+        var attributedString = NSMutableAttributedString(string: text)
         if let pattern = detectRubyAnnotation(text) {
         for result in try! NSRegularExpression(pattern: pattern ).matches(in: text).reversed() {
             if let string = Range(result.range(at: 1), in: text).map({ String(text[$0]) }),
@@ -145,6 +147,11 @@ class Bopomofo {
 
         }
     } // pattern detect if
+        attributedString =  addParagraphStyle(attributedString: attributedString, settings: settings)
+        return attributedString
+    }
+        
+    func addParagraphStyle(attributedString:NSMutableAttributedString, settings:FramePageSettings) -> NSMutableAttributedString{
         // *** Create instance of `NSMutableParagraphStyle`
         let paragraphStyle = NSMutableParagraphStyle()
 
@@ -201,5 +208,178 @@ class Bopomofo {
         ])
         return attributedString
     }
-        
+}
+
+//// ruby parser
+//// ｜心《ㄒㄧㄣ》 // ｜(.+?)《(.+?)》
+////  詩ㄕ名ㄇㄧㄥˊ // "([\\p{Han}]+?)[\s]*([ㄅ-ㄩ˙ˊˇˋ]{1,4})"
+//// 長(cháng) 信(xìn) 怨(yuàn) 王(wáng) 昌(chāng) 齡(líng) "([\\p{Han}]+?)[\\n\\t]*\\(([a-zA-Zāɑ̄ēīōūǖĀĒĪŌŪǕáɑ́éíóúǘÁÉÍÓÚǗǎɑ̌ěǐǒǔǚǍĚǏǑǓǙàɑ̀èìòùǜÀÈÌÒÙǛɑüÜ1-4]+?)\\)"
+//// 長cháng 信xìn 怨yuàn 王wáng 昌chāng 齡líng "([\\p{Han}]+?)[\\n\\t]*\\(([a-zA-Zāɑ̄ēīōūǖĀĒĪŌŪǕáɑ́éíóúǘÁÉÍÓÚǗǎɑ̌ěǐǒǔǚǍĚǏǑǓǙàɑ̀èìòùǜÀÈÌÒÙǛɑüÜ1-4]+?)\\)"
+//
+//
+//
+extension String {
+    func matches(for regex: String, in text: String) -> [String] {
+
+        do {
+            let regex = try NSRegularExpression(pattern: regex)
+            let results = regex.matches(in: text,
+                                        range: NSRange(text.startIndex..., in: text))
+            return results.map {
+                String(text[Range($0.range, in: text)!])
+            }
+        } catch let error {
+            print("invalid regex: \(error.localizedDescription)")
+            return []
+        }
+    }
+    func findReplace1(regex:String, replace:String) -> String{
+        return self.replacingOccurrences(of: regex, with: replace, options: .regularExpression)
+    }
+    func findReplace(regex:String, instr:String, replace:String) -> String{
+    var str = instr
+        let regex = try! NSRegularExpression(pattern: regex, options: .caseInsensitive)
+        str = regex.stringByReplacingMatches(in: instr, options: [], range: NSRange(0..<instr.utf16.count), withTemplate: replace)
+
+        return str
+    }
+
+    var containsChineseCharacters: Bool {
+            return self.range(of: "\\p{Han}", options: .regularExpression) != nil
+        }
+
+    
+    public mutating func replaceGroups(matching regex: NSRegularExpression, with template: String, options: NSRegularExpression.MatchingOptions = []) {
+        var replacingRanges: [(subrange: Range<String.Index>, replacement: String)] = []
+        let matches = regex.matches(in: self, options: options, range: NSRange(location: 0, length: utf16.count))
+        for match in matches {
+            var replacement: String = template
+            for rangeIndex in 1 ..< match.numberOfRanges {
+                let group: String = (self as NSString).substring(with: match.range(at: rangeIndex))
+                replacement = replacement.replacingOccurrences(of: "$\(rangeIndex)", with: group)
+            }
+            replacingRanges.append((subrange: Range(match.range(at: 0), in: self)!, replacement: replacement))
+        }
+        for (subrange, replacement) in replacingRanges.reversed() {
+            self.replaceSubrange(subrange, with: replacement)
+        }
+    }
+
+
+    public func replacingGroups(matching regex: NSRegularExpression, with transformationString: String) -> String {
+        var mutableSelf = self
+        mutableSelf.replaceGroups(matching: regex, with: transformationString)
+        return mutableSelf
+    }
+}
+
+extension NSAttributedString.Key {
+    static let rubyAnnotation: NSAttributedString.Key = kCTRubyAnnotationAttributeName as NSAttributedString.Key
+}
+// now work Cannot find type 'AttributedString' in scope
+//extension AttributedString {
+//    func toNSAttributedString(){
+//        return NSAttributedString(self)
+//    }
+//}
+//extension NSAttributedString {
+//    func toAttributeString(){
+//        let a = try AttributedString(self, including: \.uiKit)
+//    }
+//
+//}
+
+extension NSMutableAttributedString {
+    func addAttributes(_ attrs: [NSAttributedString.Key: Any] = [:]) {
+        addAttributes(attrs, range: NSRange(string.startIndex ..< string.endIndex, in: string))
+    }
+
+    
+    /* convert */
+    
+//https://stackoverflow.com/questions/43723345/nsattributedstring-change-the-font-overall-but-keep-all-other-attributes
+//    func substring(from:NSRange) {
+//        let attr =
+//        attributedSubstring(from: NSRange)
+//    }
+ //   attributedSubstringFromRange(
+    func setFontFace(font: UIFont, color: UIColor? = nil) {
+        beginEditing()
+        self.enumerateAttribute(
+            .font,
+            in: NSRange(location: 0, length: self.length)
+        ) { (value, range, stop) in
+
+            if let f = value as? UIFont,
+              let newFontDescriptor = f.fontDescriptor
+                .withFamily(font.familyName)
+                .withSymbolicTraits(f.fontDescriptor.symbolicTraits) {
+
+                let newFont = UIFont(
+                    descriptor: newFontDescriptor,
+                    size: font.pointSize
+                )
+                removeAttribute(.font, range: range)
+                addAttribute(.font, value: newFont, range: range)
+                if let color = color {
+                    removeAttribute(
+                        .foregroundColor,
+                        range: range
+                    )
+                    addAttribute(
+                        .foregroundColor,
+                        value: color,
+                        range: range
+                    )
+                }
+            }
+        }
+        endEditing()
+    }
+    func chnageFontSize(font: UIFont, size: CGFloat,  color: UIColor? = nil) {
+        beginEditing()
+        self.enumerateAttribute(
+            .font,
+            in: NSRange(location: 0, length: self.length)
+        ) { (value, range, stop) in
+
+            if let f = value as? UIFont,
+              let newFontDescriptor = f.fontDescriptor
+                .withFamily(font.familyName)
+                .withSymbolicTraits(f.fontDescriptor.symbolicTraits) {
+
+                let newFont = UIFont(
+                    descriptor: newFontDescriptor,
+                    size: size
+                )
+                removeAttribute(.font, range: range)
+                addAttribute(.font, value: newFont, range: range)
+                if let color = color {
+                    removeAttribute(
+                        .foregroundColor,
+                        range: range
+                    )
+                    addAttribute(
+                        .foregroundColor,
+                        value: color,
+                        range: range
+                    )
+                }
+            }
+        }
+        endEditing()
+    }
+}
+
+
+extension NSRegularExpression {
+    func matches(in string: String, options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
+        return matches(in: string, options: options, range: NSRange(string.startIndex ..< string.endIndex, in: string))
+    }
+}
+extension UIFont {
+    func withTraits(traits:UIFontDescriptor.SymbolicTraits) -> UIFont {
+        let descriptor = fontDescriptor.withSymbolicTraits(traits)
+        return UIFont(descriptor: descriptor!, size: 0) //size 0 means keep the size as it is
+    }
 }

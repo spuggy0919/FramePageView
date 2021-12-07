@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 
 class TXTItem{
     var description:String
@@ -18,93 +17,13 @@ class TXTItem{
     }
 }
 var txtSamples :[TXTItem] = [
+    TXTItem("SimpleMD",testMDString),
     TXTItem("李白將進酒注音",李白將進酒),
     TXTItem("蜀道難注音",蜀道難),
     TXTItem("心經注音",心經注音),
     TXTItem("詩拼音",Poempingyin),
     TXTItem("蜀道難拼音",蜀道難pingyin),
 ]
-//// ruby parser
-//// ｜心《ㄒㄧㄣ》 // ｜(.+?)《(.+?)》
-////  詩ㄕ名ㄇㄧㄥˊ // "([\\p{Han}]+?)[\s]*([ㄅ-ㄩ˙ˊˇˋ]{1,4})"
-//// 長(cháng) 信(xìn) 怨(yuàn) 王(wáng) 昌(chāng) 齡(líng) "([\\p{Han}]+?)[\\n\\t]*\\(([a-zA-Zāɑ̄ēīōūǖĀĒĪŌŪǕáɑ́éíóúǘÁÉÍÓÚǗǎɑ̌ěǐǒǔǚǍĚǏǑǓǙàɑ̀èìòùǜÀÈÌÒÙǛɑüÜ1-4]+?)\\)"
-//// 長cháng 信xìn 怨yuàn 王wáng 昌chāng 齡líng "([\\p{Han}]+?)[\\n\\t]*\\(([a-zA-Zāɑ̄ēīōūǖĀĒĪŌŪǕáɑ́éíóúǘÁÉÍÓÚǗǎɑ̌ěǐǒǔǚǍĚǏǑǓǙàɑ̀èìòùǜÀÈÌÒÙǛɑüÜ1-4]+?)\\)"
-//
-//
-//
-extension String {
-    func matches(for regex: String, in text: String) -> [String] {
-
-        do {
-            let regex = try NSRegularExpression(pattern: regex)
-            let results = regex.matches(in: text,
-                                        range: NSRange(text.startIndex..., in: text))
-            return results.map {
-                String(text[Range($0.range, in: text)!])
-            }
-        } catch let error {
-            print("invalid regex: \(error.localizedDescription)")
-            return []
-        }
-    }
-    func findReplace1(regex:String, replace:String) -> String{
-        return self.replacingOccurrences(of: regex, with: replace, options: .regularExpression)
-    }
-    func findReplace(regex:String, instr:String, replace:String) -> String{
-    var str = instr
-        let regex = try! NSRegularExpression(pattern: regex, options: .caseInsensitive)
-        str = regex.stringByReplacingMatches(in: instr, options: [], range: NSRange(0..<instr.utf16.count), withTemplate: replace)
-
-        return str
-    }
-
-    var containsChineseCharacters: Bool {
-            return self.range(of: "\\p{Han}", options: .regularExpression) != nil
-        }
-
-    
-    public mutating func replaceGroups(matching regex: NSRegularExpression, with template: String, options: NSRegularExpression.MatchingOptions = []) {
-        var replacingRanges: [(subrange: Range<String.Index>, replacement: String)] = []
-        let matches = regex.matches(in: self, options: options, range: NSRange(location: 0, length: utf16.count))
-        for match in matches {
-            var replacement: String = template
-            for rangeIndex in 1 ..< match.numberOfRanges {
-                let group: String = (self as NSString).substring(with: match.range(at: rangeIndex))
-                replacement = replacement.replacingOccurrences(of: "$\(rangeIndex)", with: group)
-            }
-            replacingRanges.append((subrange: Range(match.range(at: 0), in: self)!, replacement: replacement))
-        }
-        for (subrange, replacement) in replacingRanges.reversed() {
-            self.replaceSubrange(subrange, with: replacement)
-        }
-    }
-
-
-    public func replacingGroups(matching regex: NSRegularExpression, with transformationString: String) -> String {
-        var mutableSelf = self
-        mutableSelf.replaceGroups(matching: regex, with: transformationString)
-        return mutableSelf
-    }
-}
-
-extension NSAttributedString.Key {
-    static let rubyAnnotation: NSAttributedString.Key = kCTRubyAnnotationAttributeName as NSAttributedString.Key
-}
-
-extension NSMutableAttributedString {
-    func addAttributes(_ attrs: [NSAttributedString.Key: Any] = [:]) {
-        addAttributes(attrs, range: NSRange(string.startIndex ..< string.endIndex, in: string))
-    }
-}
-
-extension NSRegularExpression {
-    func matches(in string: String, options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
-        return matches(in: string, options: options, range: NSRange(string.startIndex ..< string.endIndex, in: string))
-    }
-}
-
-
-
 
 let 心經筆記="""
 心經筆記  作者 Spuggy 修改于二○○九年五月十五日

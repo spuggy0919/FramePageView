@@ -254,7 +254,7 @@ class FramePage:UIView{
     
     func makePageInputString(text:String){
         if (text != ""){
-            attributeString = bopomofo(text: text)
+            attributeString = bopomofof(text: text)
             layoutFlag = .reLayout // relayout to count pages
          //--  isNeedsDisplay = true
             _ = makePagecfrange()
@@ -364,7 +364,7 @@ class FramePage:UIView{
     }
     
     // ruby parser move out
-    func bopomofo(text: String)->NSAttributedString{
+    func bopomofof(text: String)->NSAttributedString{
         let bopomofoPaser = Bopomofo(text: text, settings: self.settings!)
         return bopomofoPaser.bopomofo(text: text)
     }

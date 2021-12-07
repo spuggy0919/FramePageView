@@ -49,7 +49,7 @@ class FramePageSettings:ObservableObject{
     // delegate
     @Published var delegate:FramePageDelegate? = nil
     // debug Draw
-    @Published var drawinset:CGFloat = 20
+    @Published var drawinset:CGFloat = 0
     @Published var topSafeArea:CGFloat = 0
     @Published var bottomSafeArea:CGFloat = 0
     @Published var debugDrawFrameFlag:Bool = false

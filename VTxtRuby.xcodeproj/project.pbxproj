@@ -16,6 +16,8 @@
 		F054B287275CFA5A00837CF7 /* Bopomofo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F054B282275CFA5A00837CF7 /* Bopomofo.swift */; };
 		F054B288275CFA5A00837CF7 /* Gesture+BookPageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = F054B283275CFA5A00837CF7 /* Gesture+BookPageControl.swift */; };
 		F054B28C275D009900837CF7 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F054B28B275D009900837CF7 /* Settings.swift */; };
+		F091D521275DC85D0039C269 /* MarkDownSimple.swift in Sources */ = {isa = PBXBuildFile; fileRef = F091D520275DC85D0039C269 /* MarkDownSimple.swift */; };
+		F091D524275E2A3A0039C269 /* FontExten.swift in Sources */ = {isa = PBXBuildFile; fileRef = F091D523275E2A3A0039C269 /* FontExten.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		F054B282275CFA5A00837CF7 /* Bopomofo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bopomofo.swift; sourceTree = "<group>"; };
 		F054B283275CFA5A00837CF7 /* Gesture+BookPageControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Gesture+BookPageControl.swift"; sourceTree = "<group>"; };
 		F054B28B275D009900837CF7 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		F091D520275DC85D0039C269 /* MarkDownSimple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkDownSimple.swift; sourceTree = "<group>"; };
+		F091D523275E2A3A0039C269 /* FontExten.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontExten.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,8 +70,10 @@
 				F054B270275CF98300837CF7 /* ContentView.swift */,
 				F054B272275CF98700837CF7 /* Assets.xcassets */,
 				F054B282275CFA5A00837CF7 /* Bopomofo.swift */,
+				F091D520275DC85D0039C269 /* MarkDownSimple.swift */,
 				F054B27F275CFA5A00837CF7 /* DrawPageView.swift */,
 				F054B28B275D009900837CF7 /* Settings.swift */,
+				F091D523275E2A3A0039C269 /* FontExten.swift */,
 				F054B283275CFA5A00837CF7 /* Gesture+BookPageControl.swift */,
 				F054B281275CFA5A00837CF7 /* Txt.swift */,
 				F054B277275CF98700837CF7 /* Info.plist */,
@@ -153,10 +159,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F091D524275E2A3A0039C269 /* FontExten.swift in Sources */,
 				F054B284275CFA5A00837CF7 /* DrawPageView.swift in Sources */,
 				F054B271275CF98300837CF7 /* ContentView.swift in Sources */,
 				F054B28C275D009900837CF7 /* Settings.swift in Sources */,
 				F054B286275CFA5A00837CF7 /* Txt.swift in Sources */,
+				F091D521275DC85D0039C269 /* MarkDownSimple.swift in Sources */,
 				F054B26F275CF98300837CF7 /* VTxtRubyApp.swift in Sources */,
 				F054B287275CFA5A00837CF7 /* Bopomofo.swift in Sources */,
 				F054B288275CFA5A00837CF7 /* Gesture+BookPageControl.swift in Sources */,
