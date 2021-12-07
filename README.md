@@ -27,3 +27,18 @@ Capture Screens
 
 <img src="./Image/1.png" alt="1" style="zoom:25%;" /><img src="./Image/2.png" alt="2" style="zoom:25%;" /><img src="./Image/3.png" alt="3" style="zoom:25%;" />
 
+## Version
+
+V 0.5
+
+. Add simple heading markdown #
+
+. Add one Picker to select sample TXT
+
+. operation 
+
+> 1. Tap center up for Increase Font Size
+> 2. Tap center for vertical Horizontal toggle
+> 3. Tap center down for small font Size
+> 4. Tap left or right for change next/ previous page
+> 5. swip up for Pick wheel ,then swip for select,  tap for  done

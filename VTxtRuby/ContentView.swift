@@ -58,7 +58,7 @@ struct ContentView: View {
             
             // Page View 
             FramePageView(inputStr: txtSamples[selection].text, isUpdate: $isUpdate, pagecount: $pageCount, settings:Settings)
-             .padding(0) // padding should before frame
+                .padding(10) // padding should before frame
                 .frame(width:sw, height: geometry.frame(in: .global).size.height ) // not contain safeAreaInsets
                 .offset(y: -geometry.safeAreaInsets.bottom )  
          //    .background(Color.clear) .zIndex(0)

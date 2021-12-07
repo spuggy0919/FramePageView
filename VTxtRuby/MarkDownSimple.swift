@@ -4,7 +4,7 @@
 //
 //  Created by Lin Hess on 2021/12/6.
 //
-
+// Most of Markdown functions are not implemented , this purpose is only for to convert Heading Tag and ruby to NSAttributedString
 import Foundation
 import UIKit
 import CoreText
